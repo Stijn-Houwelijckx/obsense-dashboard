@@ -3,7 +3,7 @@ import { useState } from "react";
 import MenuButton from "components/@button/MenuButton";
 import Navigation from "components/@navigation/Navigation";
 
-const Home = () => {
+const Settings = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -16,7 +16,7 @@ const Home = () => {
       <div className="px-8 pt-6">
         <div className="flex justify-between items-center">
           <h1 className="font-title font-semibold text-2xl text-neutral-50 pt-0.5">
-            Home
+            Settings
           </h1>
           <MenuButton onClick={toggleMenu} isMenuOpen={isMenuOpen} />
         </div>
@@ -25,4 +25,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Settings;
