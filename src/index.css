@@ -14,9 +14,11 @@
 html,
 body,
 #root {
-  box-sizing: border-box;
-  background-color: #18181b;
   height: 100%;
+  background-color: #18181b;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Nohemi Font */
