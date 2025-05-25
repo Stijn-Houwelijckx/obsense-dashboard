@@ -14,3 +14,7 @@ export type User = {
   };
   tokens?: number;
 };
+
+export type SignUpFormData = User;
+
+export type SignInFormData = Pick<User, "email" | "password">;

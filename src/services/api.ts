@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useAuthStorage } from "store/authStorage";
-import { User } from "types/user.types";
+import { SignInFormData, SignUpFormData } from "types/auth.types";
 
-const API_URL = "http://localhost:3000/api/v1";
+const API_URL = "http://192.168.0.248:3000/api/v1";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -34,16 +34,14 @@ api.interceptors.request.use(
 );
 
 export const authService = {
-  signup: async (
-    userData: Omit<User, "confirmPassword" | "profilePicture" | "tokens">
-  ) => {
+  signup: async (userData: Omit<SignUpFormData, "confirmPassword">) => {
     const response = await api.post("/users/signup", {
       user: userData,
     });
     return response.data;
   },
 
-  login: async (userData: Pick<User, "email" | "password">) => {
+  login: async (userData: SignInFormData) => {
     const response = await api.post("/users/login", { user: userData });
     return response.data;
   },
