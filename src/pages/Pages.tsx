@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import RequireAuth from "components/@routes/RequireAuth";
+import RequireAuth from "components/@route-protection/RequireAuth";
 
 import Collections from "./Collections";
 import Home from "./Home";

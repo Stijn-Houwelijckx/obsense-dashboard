@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { authService } from "services/api";
+import { authenticationService } from "services/authentication";
 import { useAuthStorage } from "store/authStorage";
 import { SignInFormData } from "types/auth.types";
 import { ErrorResponse } from "types/response.types";
@@ -36,7 +36,7 @@ const SignIn = () => {
 
   const onSubmit = async (data: SignInFormData) => {
     try {
-      const response = await authService.login(data);
+      const response = await authenticationService.login(data);
 
       setToken(response.data.token);
       navigate(targetPath, { replace: true });

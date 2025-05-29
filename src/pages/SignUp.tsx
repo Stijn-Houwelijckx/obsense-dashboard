@@ -3,7 +3,7 @@ import { useFormFields } from "hooks/useFormFields";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { authService } from "services/api";
+import { authenticationService } from "services/authentication";
 import { useAuthStorage } from "store/authStorage";
 import { SignUpFormData } from "types/auth.types";
 import { ErrorResponse } from "types/response.types";
@@ -84,7 +84,7 @@ const SignUp = () => {
         isArtist: true,
       };
 
-      const response = await authService.signup(userData);
+      const response = await authenticationService.signup(userData);
 
       setToken(response.data.token);
       navigate(targetPath, { replace: true });
