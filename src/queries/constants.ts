@@ -1,0 +1,19 @@
+export const ONE_MINUTE = 60000;
+
+export enum StaleTime {
+  THIRTY_SEC = ONE_MINUTE / 2,
+  MINUTE = ONE_MINUTE,
+  FIVE_MIN = 5 * ONE_MINUTE,
+  FIFTEEN_MIN = 15 * ONE_MINUTE,
+  THIRTY_MIN = 30 * ONE_MINUTE,
+  FORTY_FIVE_MIN = 45 * ONE_MINUTE,
+  ONE_HOUR = 60 * ONE_MINUTE,
+  FOREVER = Infinity,
+}
+
+export enum RefetchTime {
+  FIVE_SECONDS = ONE_MINUTE / 20,
+  MINUTE = ONE_MINUTE,
+  FIVE_MIN = 5 * ONE_MINUTE,
+  FIFTEEN_MIN = 15 * ONE_MINUTE,
+}
