@@ -1,6 +1,6 @@
 export const QueryKeys = {
   collections: {
-    all: () => ["collections"],
-    // byId: (id: string) => ["collections", id],
+    all: () => ['collections'],
+    details: (id: string) => ['collections', id],
   },
 };
