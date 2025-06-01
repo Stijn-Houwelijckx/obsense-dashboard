@@ -1,18 +1,25 @@
-import api from "./api";
+import { ApiResponse } from 'types/api.types';
+import { Collection, Collections } from 'types/collection.types';
+
+import api from './api';
 
 export const collectionsService = {
   getCollections: async () => {
-    const response = await api.get("/artist/collections");
+    const response = await api.get<ApiResponse<Collections>>('/artist/collections');
 
     if (response.status === 204) {
       return {
         code: 204,
-        status: "success",
-        message: "No collections found.",
+        status: 'success',
+        message: 'No collections found.',
         data: { collections: [] },
       };
     }
 
+    return response.data;
+  },
+  getCollectionDetails: async (id: string) => {
+    const response = await api.get<ApiResponse<Collection>>(`/artist/collections/${id}`);
     return response.data;
   },
 };
