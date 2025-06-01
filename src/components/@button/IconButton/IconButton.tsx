@@ -1,27 +1,22 @@
-import { cn } from "utils/cn";
+import { cn } from 'utils/cn';
 
 interface Props {
-  type?: "button" | "submit" | "reset";
+  className?: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  btnClassName?: string;
-  iconClassName?: string;
   onClick?: () => void;
 }
 
-const IconButton = ({
-  type = "button",
-  icon: Icon,
-  btnClassName,
-  iconClassName,
-  onClick,
-}: Props) => {
+const IconButton = ({ className, icon: Icon, onClick }: Props) => {
   return (
     <button
-      type={type}
+      type="button"
       onClick={onClick}
-      className={cn("bg-secondary-800 rounded-full p-3", btnClassName)}
+      className={cn(
+        'h-12 w-12 flex items-center justify-center bg-secondary-800 rounded-full p-3',
+        className,
+      )}
     >
-      <Icon className={cn("h-6 w-auto fill-current", iconClassName)} />
+      <Icon className="h-full w-full fill-current" />
     </button>
   );
 };

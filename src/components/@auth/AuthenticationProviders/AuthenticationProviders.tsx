@@ -1,5 +1,5 @@
-import LogoButton from "components/@button/LogoButton";
-import { AppleIcon, FacebookIcon, GoogleIcon } from "components/@icon";
+import LogoButton from 'components/@button/LogoButton';
+import { AppleIcon, FacebookIcon, GoogleIcon } from 'components/@icon';
 
 const AuthenticationProviders = () => {
   return (

@@ -1,32 +1,20 @@
-import { cn } from "utils/cn";
+import { cn } from 'utils/cn';
 
 interface Props {
+  className?: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  type?: "button" | "submit" | "reset";
-  btnClassName?: string;
-  iconClassName?: string;
 }
 
-const LogoButton = ({
-  icon: Icon,
-  type = "button",
-  btnClassName,
-  iconClassName,
-}: Props) => {
+const LogoButton = ({ className, icon: Icon }: Props) => {
   return (
     <button
-      type={type}
+      type="button"
       className={cn(
-        "flex flex-1 justify-center bg-primary-500/20 border border-primary-500 rounded-lg p-2",
-        btnClassName
+        'h-10 sm:h-11 w-auto flex flex-1 justify-center bg-primary-500/20 text-primary-500 border border-primary-500 rounded-lg p-1.5',
+        className,
       )}
     >
-      <Icon
-        className={cn(
-          "h-6 w-auto fill-current text-primary-500 sm:h-7",
-          iconClassName
-        )}
-      />
+      <Icon className="h-full w-full fill-current" />
     </button>
   );
 };
