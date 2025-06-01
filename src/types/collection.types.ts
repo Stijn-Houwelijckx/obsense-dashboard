@@ -1,35 +1,27 @@
+export type Collections = {
+  collections: CollectionItem[];
+};
+
 export type Collection = {
+  collection: CollectionItem;
+};
+
+export type CollectionItem = {
   _id: string;
-  type: string;
   title: string;
-  description: string;
+  type: string;
   city: string;
-  price: number;
+  objects: [];
   coverImage: {
     fileName: string;
     filePath: string;
     fileType: string;
     fileSize: number;
   };
-  objects: [];
-  maxObjects: number;
-  timesBought: number;
-  genres: string[];
   location: {
     lat: number;
     lon: number;
   };
-  likes: [];
-  views: [];
-  ratings: [];
   isActive: boolean;
   isPublished: boolean;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
-export type CollectionList = {
-  collections: Collection[];
 };
