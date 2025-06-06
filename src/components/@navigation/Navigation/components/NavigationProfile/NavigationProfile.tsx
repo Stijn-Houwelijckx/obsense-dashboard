@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import IconButton from 'components/@button/IconButton';
-import { ChevronIcon } from 'components/@icon';
+import { ChevronRightIcon } from 'components/@icon';
 
 const NavigationProfile = () => {
   return (
@@ -11,7 +11,7 @@ const NavigationProfile = () => {
         <span className="text-sm font-semibold">Emiel Houman</span>
         <span className="text-xs text-neutral-100/50">emielhouman@gmail.com</span>
       </div>
-      <IconButton icon={ChevronIcon} className="ml-auto bg-transparent text-neutral-100/50" />
+      <IconButton icon={ChevronRightIcon} className="ml-auto bg-transparent text-neutral-100/50" />
     </Link>
   );
 };
