@@ -3,4 +3,7 @@ export const QueryKeys = {
     all: () => ['collections'],
     details: (id: string) => ['collections', id],
   },
+  genres: {
+    all: () => ['genres'],
+  },
 };
