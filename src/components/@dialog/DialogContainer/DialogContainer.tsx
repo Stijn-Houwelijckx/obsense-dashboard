@@ -31,7 +31,7 @@ const SimpleDialog = ({ title, children, isOpen, onCloseDialog }: Props) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center">
-          <h2 className="font-title leading-none text-[20px] font-bold tracking-wide pt-1">{title}</h2>
+          <h2 className="font-title leading-none text-[22px] font-bold tracking-wide pt-1">{title}</h2>
           <IconButton
             icon={CloseIcon}
             className="w-8 h-8 bg-secondary-700 p-1.5 ml-1"

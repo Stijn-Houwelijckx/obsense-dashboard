@@ -26,7 +26,7 @@ const Collections = () => {
   return (
     <>
       <Navigation isMenuOpen={isMenuOpen} />
-      <div className="min-h-dvh px-8 pt-6 flex flex-col">
+      <div className="min-h-dvh px-8 pt-6 pb-14 flex flex-col">
         <div className="flex justify-between items-center">
           <h1 className="font-title font-semibold text-[26px] text-neutral-50 pt-0.5">Collections</h1>
           <MenuButton onClick={toggleMenu} isMenuOpen={isMenuOpen} />
@@ -39,7 +39,7 @@ const Collections = () => {
           />
         )}
         {collections && collections.length > 0 && (
-          <div className="flex flex-col gap-6 mt-8 mb-8">
+          <div className="flex flex-col gap-6 pt-8">
             <CollectionCreateButton />
             <HorizontalDivider />
             <div className="grid grid-cols-1 gap-5">
