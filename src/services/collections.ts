@@ -26,4 +26,8 @@ export const collectionsService = {
     const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}`, collection);
     return response.data;
   },
+  deleteCollection: async (id: string) => {
+    const response = await api.delete<ApiResponse<null>>(`/artist/collections/${id}`);
+    return response.data;
+  },
 };
