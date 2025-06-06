@@ -1,3 +1,5 @@
+import { GenreItem } from './genres.types';
+
 export type Collections = {
   collections: CollectionItem[];
 };
@@ -8,20 +10,38 @@ export type Collection = {
 
 export type CollectionItem = {
   _id: string;
-  title: string;
   type: string;
+  title: string;
+  description: string;
   city: string;
-  objects: [];
+  price: number;
+  genres: GenreItem[];
   coverImage: {
     fileName: string;
     filePath: string;
     fileType: string;
     fileSize: number;
   };
-  location: {
+  objects?: [];
+  location?: {
     lat: number;
     lon: number;
   };
-  isActive: boolean;
-  isPublished: boolean;
+  isActive?: boolean;
+  isPublished?: boolean;
+};
+
+// Base form data type with required fields for all steps
+export type CollectionItemFormData = Omit<CollectionItem, 'genres'> & {
+  genres: string[];
+};
+
+// Specific form data type for the general step
+export type CollectionGeneralFormData = Omit<
+  CollectionItemFormData,
+  'objects' | 'location' | 'isActive' | 'isPublished'
+>;
+
+export type CollectionFormData = {
+  collection: CollectionItemFormData;
 };
