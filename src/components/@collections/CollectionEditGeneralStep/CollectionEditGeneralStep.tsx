@@ -21,7 +21,7 @@ interface Props {
   collection: CollectionItem;
   setIsEdited: (isEdited: boolean) => void;
   onNextEditStep: () => void;
-  onStepBack: () => void;
+  onBackClick: () => void;
   onFormDataChange: (data: CollectionGeneralFormData) => void;
   onFormErrorsChange: (hasErrors: boolean) => void;
 }
@@ -30,7 +30,7 @@ const CollectionEditGeneralStep = ({
   collection,
   setIsEdited,
   onNextEditStep,
-  onStepBack,
+  onBackClick,
   onFormDataChange,
   onFormErrorsChange,
 }: Props) => {
@@ -210,7 +210,7 @@ const CollectionEditGeneralStep = ({
             label="Go back"
             disabled={hasErrors}
             leftIcon={ChevronLeftIcon}
-            onClick={onStepBack}
+            onClick={onBackClick}
             className={cn(
               'h-12 font-semibold text-primary-500/80 bg-secondary-800/50 border border-primary-500/50 p-3 px-3.5',
               hasErrors && 'text-neutral-100/50 bg-secondary-800 border-neutral-200/20',
