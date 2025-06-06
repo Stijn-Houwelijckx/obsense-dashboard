@@ -3,7 +3,7 @@ import { FieldErrors, Path, RegisterOptions, UseFormRegister } from 'react-hook-
 import { Link } from 'react-router-dom';
 
 import IconButton from 'components/@button/IconButton';
-import { HideIcon, ViewIcon } from 'components/@icon';
+import { HideIcon, InfoIcon, ViewIcon } from 'components/@icon';
 
 interface Props<T extends Record<string, unknown>> {
   label: string;
@@ -12,10 +12,15 @@ interface Props<T extends Record<string, unknown>> {
   placeholder: string;
   isPassword?: boolean;
   hasForgotPassword?: boolean;
+  hasInfo?: boolean;
+  onFocus?: () => void;
   register: UseFormRegister<T>;
   errors: FieldErrors;
   validation?: RegisterOptions<T, Path<T>>;
 }
+
+// TODO: remove autofill styling
+// TODO: fix spacing when there are errors in forms
 
 const InputField = <T extends Record<string, unknown>>({
   label,
@@ -24,6 +29,8 @@ const InputField = <T extends Record<string, unknown>>({
   placeholder,
   isPassword = false,
   hasForgotPassword = false,
+  hasInfo = false,
+  onFocus,
   register,
   errors,
   validation,
@@ -32,13 +39,18 @@ const InputField = <T extends Record<string, unknown>>({
 
   return (
     <div className="w-full flex flex-col gap-1.5">
-      <label className="font-medium">{label}</label>
-
+      <div className="flex justify-between items-center">
+        <label className="font-medium text-neutral-100">{label}</label>
+        {hasInfo && (
+          <IconButton icon={InfoIcon} className="w-5 h-5 text-neutral-100/50 p-0 ml-auto" />
+        )}
+      </div>
       <div className="relative">
         <input
-          className="w-full border bg-secondary-700 placeholder-neutral-500 rounded-lg px-3 p-2.5 focus:outline-none focus:border-primary-500"
+          className="w-full border border-neutral-500 bg-secondary-700 placeholder-neutral-500 rounded-lg px-3 p-2.5 focus:outline-none focus:border-primary-500"
           type={showPassword ? 'text' : type}
           placeholder={placeholder}
+          onFocus={onFocus}
           {...register(name, validation)}
         />
         {isPassword && (
@@ -49,12 +61,12 @@ const InputField = <T extends Record<string, unknown>>({
           />
         )}
       </div>
-      <div className="min-h-5 w-full flex justify-between">
+      <div className="min-h-4 w-full flex justify-between">
         {errors[name] && (
-          <p className="text-sm text-red-500">{errors[name]?.message?.toString()}</p>
+          <p className="text-xs text-red-500">{errors[name]?.message?.toString()}</p>
         )}
         {hasForgotPassword && (
-          <Link to="/forgot-password" className="font-bold text-sm text-primary-500 ml-auto">
+          <Link to="/forgot-password" className="font-bold text-xs text-primary-500 ml-auto">
             Forgot password?
           </Link>
         )}
