@@ -22,4 +22,8 @@ export const collectionsService = {
     const response = await api.get<ApiResponse<Collection>>(`/artist/collections/${id}`);
     return response.data;
   },
+  updateCollection: async (id: string, collection: FormData) => {
+    const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}`, collection);
+    return response.data;
+  },
 };
