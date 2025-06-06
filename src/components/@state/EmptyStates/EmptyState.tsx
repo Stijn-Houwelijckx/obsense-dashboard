@@ -16,7 +16,7 @@ const EmptyStates = ({ title, description, cta }: Props) => {
         {title}
       </h2>
       <p className="text-neutral-50 text-center pt-3.5">{description}</p>
-      {cta && <Button label={cta} className="mt-12 mb-0" />}
+      {cta && <Button label={cta} className="w-full mt-10 p-3.5 sm:p-4" />}
     </div>
   );
 };

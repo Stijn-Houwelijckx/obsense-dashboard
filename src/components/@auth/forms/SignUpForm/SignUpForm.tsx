@@ -1,13 +1,10 @@
-import { useFormFields } from "hooks/useFormFields";
-import {
-  FieldErrors,
-  UseFormHandleSubmit,
-  UseFormRegister,
-} from "react-hook-form";
-import { SignUpFormData } from "types/auth.types";
+import { useFormFields } from 'hooks/useFormFields';
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import { SignUpFormData } from 'types/auth.types';
+import { cn } from 'utils/cn';
 
-import Button from "components/@button/Button";
-import InputField from "components/@form/InputField";
+import Button from 'components/@button/Button';
+import InputField from 'components/@form/InputField';
 
 interface Props {
   errors: FieldErrors;
@@ -18,24 +15,15 @@ interface Props {
   handleNextFormStep: () => void;
 }
 
-const SignUpForm = ({
-  errors,
-  register,
-  handleSubmit,
-  onSubmit,
-  currentFormStep,
-  handleNextFormStep,
-}: Props) => {
-  const hasErrors = useFormFields(currentFormStep).some(
-    (field) => errors[field]
-  );
+const SignUpForm = ({ errors, register, handleSubmit, onSubmit, currentFormStep, handleNextFormStep }: Props) => {
+  const hasErrors = useFormFields(currentFormStep).some((field) => errors[field]);
 
   return (
     <form className="pt-6 xl:pt-0">
-      <div className={`flex flex-col ${hasErrors ? "gap-2.5" : "gap-0"}`}>
+      <div className={`flex flex-col ${hasErrors ? 'gap-2.5' : 'gap-0'}`}>
         <div
-          className={`flex-col ${hasErrors ? "gap-2.5" : "gap-0"} ${
-            currentFormStep === 1 ? "flex" : "hidden"
+          className={`flex-col ${hasErrors ? 'gap-2.5' : 'gap-0'} ${
+            currentFormStep === 1 ? 'flex' : 'hidden'
           } xl:flex xl:flex-row xl:gap-8`}
         >
           <InputField
@@ -45,7 +33,7 @@ const SignUpForm = ({
             placeholder="John"
             register={register}
             errors={errors}
-            validation={{ required: "First name is required." }}
+            validation={{ required: 'First name is required.' }}
           />
           <InputField
             label="Last name"
@@ -54,12 +42,12 @@ const SignUpForm = ({
             placeholder="Doe"
             register={register}
             errors={errors}
-            validation={{ required: "Last name is required." }}
+            validation={{ required: 'Last name is required.' }}
           />
         </div>
         <div
-          className={`flex-col ${hasErrors ? "gap-2.5" : "gap-0"} ${
-            currentFormStep === 2 ? "flex" : "hidden"
+          className={`flex-col ${hasErrors ? 'gap-2.5' : 'gap-0'} ${
+            currentFormStep === 2 ? 'flex' : 'hidden'
           } xl:flex xl:flex-row xl:gap-8`}
         >
           <InputField
@@ -69,7 +57,7 @@ const SignUpForm = ({
             placeholder="john.doe"
             register={register}
             errors={errors}
-            validation={{ required: "Username is required." }}
+            validation={{ required: 'Username is required.' }}
           />
           <InputField
             label="Email"
@@ -79,17 +67,17 @@ const SignUpForm = ({
             register={register}
             errors={errors}
             validation={{
-              required: "Email is required.",
+              required: 'Email is required.',
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "This email is invalid.",
+                message: 'This email is invalid.',
               },
             }}
           />
         </div>
         <div
-          className={`flex-col ${hasErrors ? "gap-2.5" : "gap-0"} ${
-            currentFormStep === 3 ? "flex" : "hidden"
+          className={`flex-col ${hasErrors ? 'gap-2.5' : 'gap-0'} ${
+            currentFormStep === 3 ? 'flex' : 'hidden'
           } xl:flex xl:flex-row xl:gap-8`}
         >
           <InputField
@@ -101,10 +89,10 @@ const SignUpForm = ({
             register={register}
             errors={errors}
             validation={{
-              required: "Password is required.",
+              required: 'Password is required.',
               minLength: {
                 value: 8,
-                message: "Password must be at least 8 characters long.",
+                message: 'Password must be at least 8 characters long.',
               },
             }}
           />
@@ -117,10 +105,10 @@ const SignUpForm = ({
             register={register}
             errors={errors}
             validation={{
-              required: "Confirm password is required.",
+              required: 'Confirm password is required.',
               minLength: {
                 value: 8,
-                message: "Password must be at least 8 characters long.",
+                message: 'Password must be at least 8 characters long.',
               },
             }}
           />
@@ -129,16 +117,20 @@ const SignUpForm = ({
       <Button
         label="Sign up"
         onClick={handleSubmit(onSubmit)}
-        className={`${currentFormStep === 3 ? "block" : "hidden"} xl:block ${
-          hasErrors ? "mt-8" : "mt-4"
-        }`}
+        className={cn(
+          'w-full mb-5 sm:mb-6 p-3.5 sm:p-4 xl:block',
+          hasErrors ? 'mt-8' : 'mt-4',
+          currentFormStep === 3 ? 'block' : 'hidden',
+        )}
       />
       <Button
         label="Next Step"
         onClick={handleNextFormStep}
-        className={`${currentFormStep === 3 ? "hidden" : "block"} xl:hidden ${
-          hasErrors ? "mt-8" : "mt-4"
-        }`}
+        className={cn(
+          'w-full mb-5 sm:mb-6 p-3.5 sm:p-4 xl:block',
+          hasErrors ? 'mt-8' : 'mt-4',
+          currentFormStep === 3 ? 'hidden' : 'block',
+        )}
       />
     </form>
   );
