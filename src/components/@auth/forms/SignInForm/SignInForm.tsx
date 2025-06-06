@@ -1,12 +1,8 @@
-import {
-  FieldErrors,
-  UseFormHandleSubmit,
-  UseFormRegister,
-} from "react-hook-form";
-import { SignInFormData } from "types/auth.types";
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
+import { SignInFormData } from 'types/auth.types';
 
-import Button from "components/@button/Button";
-import InputField from "components/@form/InputField";
+import Button from 'components/@button/Button';
+import InputField from 'components/@form/InputField';
 
 interface Props {
   errors: FieldErrors;
@@ -20,7 +16,7 @@ const SignInForm = ({ errors, register, handleSubmit, onSubmit }: Props) => {
 
   return (
     <form className="pt-3.5 sm:pt-2.5 xl:pt-0">
-      <div className={`flex flex-col ${hasErrors ? "gap-2.5" : "gap-0"}`}>
+      <div className={`flex flex-col ${hasErrors ? 'gap-2.5' : 'gap-0'}`}>
         <InputField
           label="Email"
           name="email"
@@ -29,13 +25,14 @@ const SignInForm = ({ errors, register, handleSubmit, onSubmit }: Props) => {
           register={register}
           errors={errors}
           validation={{
-            required: "Email is required.",
+            required: 'Email is required.',
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "This email is invalid.",
+              message: 'This email is invalid.',
             },
           }}
         />
+        {/* TODO: add password forgot logic */}
         <InputField
           label="Password"
           name="password"
@@ -46,20 +43,15 @@ const SignInForm = ({ errors, register, handleSubmit, onSubmit }: Props) => {
           register={register}
           errors={errors}
           validation={{
-            required: "Password is required.",
+            required: 'Password is required.',
             minLength: {
               value: 8,
-              message: "Password must be at least 8 characters long.",
+              message: 'Password must be at least 8 characters long.',
             },
           }}
         />
       </div>
-      <Button
-        label="Sign in"
-        type="button"
-        className="mt-8"
-        onClick={handleSubmit(onSubmit)}
-      />
+      <Button label="Sign in" className="w-full mt-8 mb-5 sm:mb-6 p-3.5 sm:p-4 " onClick={handleSubmit(onSubmit)} />
     </form>
   );
 };
