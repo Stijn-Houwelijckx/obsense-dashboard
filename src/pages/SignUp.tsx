@@ -1,30 +1,30 @@
-import { AxiosError } from "axios";
-import { useFormFields } from "hooks/useFormFields";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
-import { authenticationService } from "services/authentication";
-import { useAuthStorage } from "store/authStorage";
-import { SignUpFormData } from "types/auth.types";
-import { ErrorResponse } from "types/response.types";
+import { AxiosError } from 'axios';
+import { useFormFields } from 'hooks/useFormFields';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { authenticationService } from 'services/authentication';
+import { useAuthStorage } from 'store/authStorage';
+import { SignUpFormData } from 'types/auth.types';
+import { ErrorResponse } from 'types/response.types';
 
-import AuthenticationContainer from "components/@auth/AuthenticationContainer";
-import AuthenticationContent from "components/@auth/AuthenticationContent";
-import AuthenticationFormTitle from "components/@auth/AuthenticationFormTitle";
-import AuthenticationHeader from "components/@auth/AuthenticationHeader";
-import AuthenticationProviders from "components/@auth/AuthenticationProviders";
-import AuthenticationRedirect from "components/@auth/AuthenticationRedirect";
-import SignUpForm from "components/@auth/forms/SignUpForm";
-import HorizontalDivider from "components/@common/Divider/HorizontalDivider";
-import ProgressBar from "components/@common/ProgressBar";
-import AuthenticationError from "components/@error/AuthenticationError";
+import AuthenticationContainer from 'components/@auth/AuthenticationContainer';
+import AuthenticationContent from 'components/@auth/AuthenticationContent';
+import AuthenticationFormTitle from 'components/@auth/AuthenticationFormTitle';
+import AuthenticationHeader from 'components/@auth/AuthenticationHeader';
+import AuthenticationProviders from 'components/@auth/AuthenticationProviders';
+import AuthenticationRedirect from 'components/@auth/AuthenticationRedirect';
+import SignUpForm from 'components/@auth/forms/SignUpForm';
+import HorizontalDivider from 'components/@common/Divider/HorizontalDivider';
+import ProgressBar from 'components/@common/ProgressBar';
+import AuthenticationError from 'components/@error/AuthenticationError';
 
 const TOTAL_FORM_STEPS = 3;
 
 const SignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const targetPath = location.state?.from ?? "/";
+  const targetPath = location.state?.from ?? '/';
 
   const { setToken } = useAuthStorage();
 
@@ -39,7 +39,11 @@ const SignUp = () => {
   } = useForm<SignUpFormData>();
 
   const [currentFormStep, setCurrentFormStep] = useState(1);
-  const [signUpError, setSignUpError] = useState<ErrorResponse | null>(null);
+  const [signUpError, setSignUpError] = useState<ErrorResponse | null>({
+    status: 'error',
+    code: 500,
+    message: 'Something went wrong... Please try again.',
+  });
 
   const currentFormFields = useFormFields(currentFormStep);
 
@@ -57,18 +61,18 @@ const SignUp = () => {
     if (data.password !== data.confirmPassword) {
       const currentValues = getValues();
 
-      setError("confirmPassword", {
-        type: "manual",
-        message: "Passwords do not match.",
+      setError('confirmPassword', {
+        type: 'manual',
+        message: 'Passwords do not match.',
       });
 
       reset(
         {
           ...currentValues,
-          password: "",
-          confirmPassword: "",
+          password: '',
+          confirmPassword: '',
         },
-        { keepErrors: true }
+        { keepErrors: true },
       );
 
       return;
@@ -76,12 +80,12 @@ const SignUp = () => {
 
     try {
       const userData = {
+        isArtist: true,
         firstName: data.firstName,
         lastName: data.lastName,
         username: data.username,
         email: data.email,
         password: data.password,
-        isArtist: true,
       };
 
       const response = await authenticationService.signup(userData);
@@ -93,15 +97,16 @@ const SignUp = () => {
         if (error.response?.data.code === 409) {
           const errorMessage = error.response?.data.message.toLowerCase();
 
-          if (errorMessage.includes("username")) {
-            setError("username", {
-              type: "manual",
-              message: "This username is already in use.",
+          // TODO: change to new error response from API
+          if (errorMessage.includes('username')) {
+            setError('username', {
+              type: 'manual',
+              message: 'This username is already in use.',
             });
-          } else if (errorMessage.includes("email")) {
-            setError("email", {
-              type: "manual",
-              message: "This email is already in use.",
+          } else if (errorMessage.includes('email')) {
+            setError('email', {
+              type: 'manual',
+              message: 'This email is already in use.',
             });
           }
           setCurrentFormStep(2);
@@ -110,9 +115,9 @@ const SignUp = () => {
         }
       } else {
         setSignUpError({
-          status: "error",
+          status: 'error',
           code: 500,
-          message: "Something went wrong... Please try again.",
+          message: 'Something went wrong... Please try again.',
         });
       }
     }
@@ -127,10 +132,7 @@ const SignUp = () => {
   return (
     <>
       {signUpError ? (
-        <AuthenticationError
-          error={signUpError}
-          handleErrorReset={handleErrorReset}
-        />
+        <AuthenticationError error={signUpError} handleErrorReset={handleErrorReset} />
       ) : (
         <AuthenticationContainer>
           <AuthenticationHeader
@@ -149,10 +151,7 @@ const SignUp = () => {
               onSubmit={onSubmit}
               handleNextFormStep={handleNextFormStep}
             />
-            <HorizontalDivider
-              message="or sign up with"
-              lineClassName="bg-neutral-300/50"
-            />
+            <HorizontalDivider message="or sign up with" lineClassName="bg-neutral-300/50" />
             <AuthenticationProviders />
             <AuthenticationRedirect
               path="/signin"

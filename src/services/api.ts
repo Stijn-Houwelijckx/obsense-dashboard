@@ -1,17 +1,17 @@
-import axios from "axios";
-import { useAuthStorage } from "store/authStorage";
+import axios from 'axios';
+import { useAuthStorage } from 'store/authStorage';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 // List of public routes with no authorisation
-const publicRoutes = ["/users/signup", "/users/login"];
+const publicRoutes = ['/users/signup', '/users/login'];
 
 // Request interceptor for adding the token to all requests
 api.interceptors.request.use(
@@ -29,7 +29,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
