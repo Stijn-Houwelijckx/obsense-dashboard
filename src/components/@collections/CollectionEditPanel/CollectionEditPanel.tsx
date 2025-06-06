@@ -1,13 +1,19 @@
+import useDeleteCollection from 'queries/collections/useDeleteCollection';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CollectionItem } from 'types/collection.types';
 import { cn } from 'utils/cn';
 
 import Button from 'components/@button/Button';
 import IconButton from 'components/@button/IconButton';
 import ProgressBar from 'components/@common/ProgressBar';
+import ConfirmDialog from 'components/@dialog/ConfirmDialog';
 import { TrashIcon, ViewIcon } from 'components/@icon';
 
 const STEPS = ['General', '3D-Objects', 'Publish'];
 
 interface Props {
+  collection: CollectionItem;
   isEdited: boolean;
   hasErrors: boolean;
   currentEditStep: number;
@@ -17,6 +23,7 @@ interface Props {
 }
 
 const CollectionEditPanel = ({
+  collection,
   isEdited,
   hasErrors,
   currentEditStep,
@@ -24,6 +31,24 @@ const CollectionEditPanel = ({
   onSaveEdits,
   onReadClick,
 }: Props) => {
+  const navigate = useNavigate();
+  const { deleteCollection, isDeleting } = useDeleteCollection();
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const onDeleteClick = () => {
+    setIsDeleteDialogOpen((prev) => !prev);
+  };
+
+  const handleDeleteCollection = () => {
+    deleteCollection(collection._id, {
+      onSuccess: () => {
+        setIsDeleteDialogOpen(false);
+        navigate('/collections');
+      },
+    });
+  };
+
   return (
     <div className="bg-secondary-800 rounded-lg mb-8 p-4">
       <div className="flex justify-between items-center bg-secondary-700 rounded-lg p-2.5 px-3.5">
@@ -48,7 +73,8 @@ const CollectionEditPanel = ({
           />
           <IconButton
             icon={TrashIcon}
-            onClick={() => console.log('delete collection')}
+            disabled={isDeleting}
+            onClick={onDeleteClick}
             className="h-11 w-11 bg-secondary-800 text-status-warning border-2 border-status-warning/20 shadow-md p-2.5"
           />
         </div>
@@ -80,6 +106,16 @@ const CollectionEditPanel = ({
         </div>
         <ProgressBar value={currentEditStep} maxValue={STEPS.length} />
       </div>
+      <ConfirmDialog
+        title="Delete collection"
+        message="Are you sure you want to delete this collection? This action can't be undone."
+        leftButtonLabel="Cancel"
+        rightButtonLabel="Delete"
+        onLeftButtonClick={() => setIsDeleteDialogOpen((prev) => !prev)}
+        onRightButtonClick={handleDeleteCollection}
+        isOpen={isDeleteDialogOpen}
+        onCloseDialog={() => setIsDeleteDialogOpen((prev) => !prev)}
+      />
     </div>
   );
 };

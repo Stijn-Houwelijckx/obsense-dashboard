@@ -91,6 +91,7 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   return (
     <>
       <CollectionEditPanel
+        collection={collection}
         isEdited={isEdited}
         hasErrors={hasFormErrors}
         currentEditStep={currentEditStep}
