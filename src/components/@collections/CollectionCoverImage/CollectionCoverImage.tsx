@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { CollectionItem } from 'types/collection.types';
 import { cn } from 'utils/cn';
 
@@ -10,12 +11,35 @@ interface CollectionCoverImageProps {
   isEditMode: boolean;
   onEditClick?: () => void;
   onBackClick?: () => void;
+  onUploadImageClick?: () => void;
+  newImageFile?: File;
 }
 
-const CollectionCoverImage = ({ collection, isEditMode, onEditClick, onBackClick }: CollectionCoverImageProps) => {
+const CollectionCoverImage = ({
+  collection,
+  isEditMode,
+  onEditClick,
+  onBackClick,
+  onUploadImageClick,
+  newImageFile,
+}: CollectionCoverImageProps) => {
+  const [imageUrl, setImageUrl] = useState<string>(collection.coverImage.filePath);
+
+  useEffect(() => {
+    if (newImageFile) {
+      const objectUrl = URL.createObjectURL(newImageFile);
+      setImageUrl(objectUrl);
+
+      // Cleanup
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setImageUrl(collection.coverImage.filePath);
+    }
+  }, [collection, newImageFile]);
+
   return (
     <div className="relative aspect-square rounded-lg overflow-hidden">
-      <img src={collection.coverImage.filePath} alt={collection.title} className="w-full h-full object-cover" />
+      <img src={imageUrl} alt={collection.title} className="w-full h-full object-cover" />
       <div className="absolute inset-x-3.5 inset-y-3.5 flex justify-end items-end">
         <span
           className={cn(
@@ -32,7 +56,7 @@ const CollectionCoverImage = ({ collection, isEditMode, onEditClick, onBackClick
           <Button
             label="Upload image"
             leftIcon={UploadIcon}
-            onClick={() => console.log('upload image')}
+            onClick={onUploadImageClick}
             className="h-12 gap-1 font-semibold text-primary-500 bg-secondary-800 border-2 border-primary-500/20 shadow-lg p-2 px-2.5"
             labelClassName="leading-none px-1.5 pt-px"
           />
