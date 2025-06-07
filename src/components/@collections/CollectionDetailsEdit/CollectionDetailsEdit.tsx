@@ -1,5 +1,5 @@
 import { useUpdateCollection } from 'queries/collections/useUpdateCollection';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CollectionGeneralFormData, CollectionItem } from 'types/collection.types';
 import { DialogTarget } from 'types/dialog.types';
@@ -27,7 +27,16 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   const [isEdited, setIsEdited] = useState(false);
 
   const [formData, setFormData] = useState<CollectionGeneralFormData | null>(null);
-  const [hasFormErrors, setHasFormErrors] = useState(false);
+  const [formErrors, setFormErrors] = useState(false);
+
+  const handleFormDataChange = useCallback(() => {
+    if (!formData) return;
+    setIsEdited(isCollectionEdited(collection, formData));
+  }, [collection, formData]);
+
+  useEffect(() => {
+    handleFormDataChange();
+  }, [handleFormDataChange]);
 
   const handleNextEditStep = () => {
     setCurrentEditStep((prev) => prev + 1);
@@ -65,19 +74,24 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
 
     if (isCollectionEdited(collection, formData)) {
       const collectionFormData = new FormData();
-      collectionFormData.append(
-        'collection',
-        JSON.stringify({
-          collection: {
-            ...formData,
-            objects: collection.objects,
-            location: collection.location,
-            isActive: collection.isActive,
-            isPublished: collection.isPublished,
+
+      // Voeg de form data toe (zonder coverImage)
+      const { coverImage, ...collectionData } = formData;
+      collectionFormData.append('collection', JSON.stringify({ collection: collectionData }));
+
+      // Als er een nieuwe cover image is, voeg deze toe aan de FormData
+      if (coverImage) {
+        collectionFormData.append('coverImage', coverImage);
+      }
+
+      updateCollection(
+        { id: collection._id, collection: collectionFormData },
+        {
+          onSuccess: () => {
+            handleDialogTarget();
           },
-        }),
+        },
       );
-      updateCollection({ id: collection._id, collection: collectionFormData });
     }
   };
 
@@ -95,11 +109,6 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
     setIsConfirmDialogOpen(false);
   };
 
-  const handleDialogSaveEdits = () => {
-    handleSaveEdits();
-    handleDialogTarget();
-  };
-
   const handleCloseDialog = () => {
     setIsConfirmDialogOpen(false);
     setDialogTarget(null);
@@ -110,27 +119,29 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
       <CollectionEditPanel
         collection={collection}
         isEdited={isEdited}
-        hasErrors={hasFormErrors}
+        hasErrors={formErrors}
         currentEditStep={currentEditStep}
         onEditStepClick={handleEditStepClick}
         onSaveEdits={handleSaveEdits}
         onReadClick={handleReadClick}
       />
-      <CollectionEditGeneralStep
-        collection={collection}
-        setIsEdited={setIsEdited}
-        onNextEditStep={handleNextEditStep}
-        onBackClick={handleBackClick}
-        onFormDataChange={setFormData}
-        onFormErrorsChange={setHasFormErrors}
-      />
+      {currentEditStep === 1 && (
+        <CollectionEditGeneralStep
+          collection={collection}
+          setIsEdited={setIsEdited}
+          onNextEditStep={handleNextEditStep}
+          onBackClick={handleBackClick}
+          onFormDataChange={setFormData}
+          onFormErrorsChange={setFormErrors}
+        />
+      )}
       <ConfirmDialog
         title="Edits not saved..."
         message="You have unsaved edits. Do you want to save them before leaving this page?"
         leftButtonLabel="Cancel"
         rightButtonLabel="Save edits"
         onLeftButtonClick={handleCloseDialog}
-        onRightButtonClick={handleDialogSaveEdits}
+        onRightButtonClick={handleSaveEdits}
         isOpen={isConfirmDialogOpen}
         onCloseDialog={handleCloseDialog}
       />
