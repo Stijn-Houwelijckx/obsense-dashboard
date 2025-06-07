@@ -89,6 +89,7 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
         { id: collection._id, collection: collectionFormData },
         {
           onSuccess: () => {
+            setIsEdited(false);
             handleDialogTarget();
           },
         },
