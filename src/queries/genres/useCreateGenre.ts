@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'queries/QueryKeys';
 import { genresService } from 'services/genres';
-import { GenreFormData } from 'types/genres.types';
+import { GenreItemFormData } from 'types/genres.types';
 
-const createGenre = async (genre: GenreFormData) => {
+const createGenre = async (genre: GenreItemFormData) => {
   const { data } = await genresService.createGenre(genre);
   return data;
 };
