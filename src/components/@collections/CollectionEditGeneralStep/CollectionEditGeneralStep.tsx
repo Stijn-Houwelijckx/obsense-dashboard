@@ -1,6 +1,6 @@
 import { useUpdateCollection } from 'queries/collections/useUpdateCollection';
 import { useGenres } from 'queries/genres/useGenres';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { CollectionGeneralFormData, CollectionItem } from 'types/collection.types';
 import { GenreItem } from 'types/genres.types';
@@ -8,6 +8,7 @@ import { cn } from 'utils/cn';
 import { isCollectionEdited } from 'utils/isCollectionEdited';
 
 import Button from 'components/@button/Button';
+import HiddenFileField from 'components/@form/HiddenFileField';
 import InputField from 'components/@form/InputField';
 import TagsField from 'components/@form/TagsField';
 import TextAreaField from 'components/@form/TextAreaField';
@@ -28,7 +29,6 @@ interface Props {
 
 const CollectionEditGeneralStep = ({
   collection,
-  setIsEdited,
   onNextEditStep,
   onBackClick,
   onFormDataChange,
@@ -49,12 +49,12 @@ const CollectionEditGeneralStep = ({
       genres: collection.genres.map((genre) => genre._id),
       city: collection.city,
       price: collection.price,
-      coverImage: collection.coverImage,
     },
     mode: 'onChange',
   });
 
   const hasErrors = Object.keys(errors).length > 0;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isGenresDialogOpen, setIsGenresDialogOpen] = useState(false);
 
@@ -67,6 +67,7 @@ const CollectionEditGeneralStep = ({
   const genres = useWatch({ control, name: 'genres' });
   const city = useWatch({ control, name: 'city' });
   const price = useWatch({ control, name: 'price' });
+  const coverImage = useWatch({ control, name: 'coverImage' });
 
   const getCurrentFormData = useCallback(
     (): CollectionGeneralFormData => ({
@@ -77,21 +78,20 @@ const CollectionEditGeneralStep = ({
       genres,
       city,
       price,
-      coverImage: collection.coverImage,
+      coverImage,
     }),
-    [collection._id, type, title, description, genres, city, price, collection.coverImage],
+    [collection._id, type, title, description, genres, city, price, coverImage],
   );
 
-  const handleFormUpdate = useCallback(() => {
+  useEffect(() => {
     const currentFormData = getCurrentFormData();
-    setIsEdited(isCollectionEdited(collection, currentFormData));
     onFormDataChange(currentFormData);
     onFormErrorsChange(Object.keys(errors).length > 0);
-  }, [getCurrentFormData, collection, setIsEdited, onFormDataChange, onFormErrorsChange, errors]);
+  }, [getCurrentFormData, onFormDataChange, onFormErrorsChange, errors]);
 
   useEffect(() => {
-    handleFormUpdate();
-  }, [handleFormUpdate]);
+    setValue('coverImage', undefined);
+  }, [collection, setValue]);
 
   const genreTags = genres.map((id) => {
     const genre = availableGenres?.find((g) => g._id === id);
@@ -111,31 +111,50 @@ const CollectionEditGeneralStep = ({
     );
   };
 
+  const handleUploadImage = () => {
+    fileInputRef.current?.click();
+  };
+
   const onSubmit = async (data: CollectionGeneralFormData) => {
     if (isCollectionEdited(collection, data)) {
       const collectionFormData = new FormData();
-      collectionFormData.append(
-        'collection',
-        JSON.stringify({
-          collection: {
-            ...data,
-            objects: collection.objects,
-            location: collection.location,
-            isActive: collection.isActive,
-            isPublished: collection.isPublished,
+
+      const { coverImage, ...collectionData } = data;
+      collectionFormData.append('collection', JSON.stringify({ collection: collectionData }));
+
+      if (coverImage) {
+        collectionFormData.append('coverImage', coverImage);
+      }
+
+      updateCollection(
+        { id: collection._id, collection: collectionFormData },
+        {
+          onSuccess: () => {
+            onNextEditStep();
           },
-        }),
+        },
       );
-      updateCollection({ id: collection._id, collection: collectionFormData });
+    } else {
+      onNextEditStep();
     }
-    onNextEditStep();
   };
 
   return (
     <div className="flex flex-col gap-6">
-      <CollectionCoverImage collection={collection} isEditMode />
+      <CollectionCoverImage
+        collection={collection}
+        isEditMode
+        onUploadImageClick={handleUploadImage}
+        newImageFile={coverImage}
+      />
       <form className="flex flex-col gap-6">
         <div className="bg-secondary-800 rounded-lg pt-6 pb-2.5 px-5">
+          <HiddenFileField
+            ref={fileInputRef}
+            name="coverImage"
+            accept="image/jpeg, image/jpg, image/png"
+            onChange={(file) => setValue('coverImage', file)}
+          />
           <ToggleField
             name="type"
             options={['tour', 'exposition']}
