@@ -29,6 +29,7 @@ interface Props {
 
 const CollectionEditGeneralStep = ({
   collection,
+  setIsEdited,
   onNextEditStep,
   onBackClick,
   onFormDataChange,
@@ -130,6 +131,7 @@ const CollectionEditGeneralStep = ({
         { id: collection._id, collection: collectionFormData },
         {
           onSuccess: () => {
+            setIsEdited(false);
             onNextEditStep();
           },
         },
