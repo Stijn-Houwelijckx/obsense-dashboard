@@ -108,7 +108,7 @@ const CollectionEditPanel = ({
       </div>
       <ConfirmDialog
         title="Delete collection"
-        message="Are you sure you want to delete this collection? This action can't be undone."
+        message="Are you sure you want to delete this collection? This action can't be undone..."
         leftButtonLabel="Cancel"
         rightButtonLabel="Delete"
         onLeftButtonClick={() => setIsDeleteDialogOpen((prev) => !prev)}
