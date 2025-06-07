@@ -13,7 +13,7 @@ import { TrashIcon, ViewIcon } from 'components/@icon';
 const STEPS = ['General', '3D-Objects', 'Publish'];
 
 interface Props {
-  collection: CollectionItem;
+  collectionId: CollectionItem['_id'];
   isEdited: boolean;
   hasErrors: boolean;
   currentEditStep: number;
@@ -23,7 +23,7 @@ interface Props {
 }
 
 const CollectionEditPanel = ({
-  collection,
+  collectionId,
   isEdited,
   hasErrors,
   currentEditStep,
@@ -41,7 +41,7 @@ const CollectionEditPanel = ({
   };
 
   const handleDeleteCollection = () => {
-    deleteCollection(collection._id, {
+    deleteCollection(collectionId, {
       onSuccess: () => {
         setIsDeleteDialogOpen(false);
         navigate('/collections');

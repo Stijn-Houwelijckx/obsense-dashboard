@@ -8,6 +8,7 @@ import { isCollectionEdited } from 'utils/isCollectionEdited';
 import ConfirmDialog from 'components/@dialog/ConfirmDialog';
 
 import CollectionEditGeneralStep from '../CollectionEditGeneralStep';
+import CollectionEditObjectsStep from '../CollectionEditObjectsStep';
 import CollectionEditPanel from '../CollectionEditPanel';
 
 interface Props {
@@ -117,7 +118,7 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   return (
     <>
       <CollectionEditPanel
-        collection={collection}
+        collectionId={collection._id}
         isEdited={isEdited}
         hasErrors={formErrors}
         currentEditStep={currentEditStep}
@@ -135,6 +136,7 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
           onFormErrorsChange={setFormErrors}
         />
       )}
+      {currentEditStep === 2 && <CollectionEditObjectsStep collectionId={collection._id} />}
       <ConfirmDialog
         title="Edits not saved..."
         message="You have unsaved edits. Do you want to save them before leaving this page?"
