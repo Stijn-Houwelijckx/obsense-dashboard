@@ -12,13 +12,12 @@ export const useUpdateCollection = () => {
 
   const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: updateCollection,
-    onMutate: async ({ id, collection }) => {
+    onMutate: async ({ id }) => {
       await queryClient.cancelQueries({
         queryKey: QueryKeys.collections.details(id),
       });
 
       const previousCollection = queryClient.getQueryData(QueryKeys.collections.details(id));
-      queryClient.setQueryData(QueryKeys.collections.details(id), collection);
 
       return { previousCollection, id };
     },
