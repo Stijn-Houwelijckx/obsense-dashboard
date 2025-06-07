@@ -23,7 +23,11 @@ export const collectionsService = {
     return response.data;
   },
   updateCollection: async (id: string, collection: FormData) => {
-    const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}`, collection);
+    const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}`, collection, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
   deleteCollection: async (id: string) => {
