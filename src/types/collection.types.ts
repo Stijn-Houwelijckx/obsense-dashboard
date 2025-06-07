@@ -39,8 +39,10 @@ export type CollectionItemFormData = Omit<CollectionItem, 'genres'> & {
 // Specific form data type for the general step
 export type CollectionGeneralFormData = Omit<
   CollectionItemFormData,
-  'objects' | 'location' | 'isActive' | 'isPublished'
->;
+  'objects' | 'location' | 'isActive' | 'isPublished' | 'coverImage'
+> & {
+  coverImage?: File;
+};
 
 export type CollectionFormData = {
   collection: CollectionItemFormData;
