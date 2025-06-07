@@ -25,7 +25,9 @@ const CollectionDetail = () => {
       <Navigation isMenuOpen={isMenuOpen} />
       <div className="min-h-dvh px-8 pt-6 pb-14 flex flex-col">
         <div className="flex justify-between items-center">
-          <h1 className="font-title font-semibold text-[26px] text-neutral-50 pt-0.5">Collection details</h1>
+          <h1 className="font-title font-semibold text-[26px] text-neutral-50 pt-0.5">
+            {isEditMode ? 'Edit collection' : 'Collection details'}
+          </h1>
           <MenuButton onClick={toggleMenu} isMenuOpen={isMenuOpen} />
         </div>
         {collection && (
