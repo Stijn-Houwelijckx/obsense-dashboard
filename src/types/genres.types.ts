@@ -11,7 +11,7 @@ export type GenreItem = {
   name: string;
 };
 
-export type GenreFormData = {
+export type GenreItemFormData = {
   genre: {
     name: string;
   };
