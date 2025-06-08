@@ -3,8 +3,8 @@ import { cn } from 'utils/cn';
 
 interface Props {
   object: ObjectItem;
-  isSelected: boolean;
-  onSelect: () => void;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
 const ObjectCard = ({ object, isSelected, onSelect }: Props) => {
@@ -19,11 +19,13 @@ const ObjectCard = ({ object, isSelected, onSelect }: Props) => {
     >
       <div className="relative aspect-square rounded-lg overflow-hidden">
         <img src={object.thumbnail.filePath} alt={object.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-x-2.5 inset-y-2.5 flex justify-end items-start">
-          <div className="w-8 h-8 flex items-center justify-center bg-secondary-700 border-2 border-neutral-200/20 rounded-full shadow-lg p-1">
-            <div className={cn('w-full h-full rounded-full', isSelected ? 'bg-primary-500' : 'bg-transparent')} />
+        {onSelect && (
+          <div className="absolute inset-x-2.5 inset-y-2.5 flex justify-end items-start">
+            <div className="w-8 h-8 flex items-center justify-center bg-secondary-700 border-2 border-neutral-200/20 rounded-full shadow-lg p-1">
+              <div className={cn('w-full h-full rounded-full', isSelected ? 'bg-primary-500' : 'bg-transparent')} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="min-h-16 flex justify-between items-center bg-secondary-700 rounded-lg p-2.5 px-4">
         <h3 className="font-title font-semibold text-xl text-primary-500 tracking-wide truncate pt-0.5">
