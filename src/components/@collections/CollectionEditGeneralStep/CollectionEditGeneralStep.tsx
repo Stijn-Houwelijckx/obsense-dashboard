@@ -114,11 +114,11 @@ const CollectionEditGeneralStep = ({ collection, setFormData, setFormErrors, onB
     <div className="flex flex-col gap-6">
       <CollectionCoverImage
         collection={collection}
-        isEditMode
+        mode="edit"
         onUploadImageClick={handleUploadImage}
         newImageFile={coverImage}
       />
-      <form className="flex flex-col gap-6">
+      <form className="flex flex-col gap-8">
         <div className="bg-secondary-800 rounded-lg pt-6 pb-2.5 px-5">
           <HiddenFileField
             ref={fileInputRef}

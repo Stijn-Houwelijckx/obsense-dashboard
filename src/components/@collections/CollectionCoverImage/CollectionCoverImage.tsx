@@ -4,11 +4,15 @@ import { cn } from 'utils/cn';
 
 import Button from 'components/@button/Button';
 import IconButton from 'components/@button/IconButton';
+import Icon from 'components/@common/Icon';
 import { ArrowIcon, EditIcon, UploadIcon } from 'components/@icon';
+import { ArtworksIcon, LocationIcon } from 'components/@icon';
+
+type CoverImageMode = 'edit' | 'card' | 'read' | 'default';
 
 interface CollectionCoverImageProps {
   collection: CollectionItem;
-  isEditMode: boolean;
+  mode?: CoverImageMode;
   onEditClick?: () => void;
   onBackClick?: () => void;
   onUploadImageClick?: () => void;
@@ -17,7 +21,7 @@ interface CollectionCoverImageProps {
 
 const CollectionCoverImage = ({
   collection,
-  isEditMode,
+  mode = 'default',
   onEditClick,
   onBackClick,
   onUploadImageClick,
@@ -30,28 +34,45 @@ const CollectionCoverImage = ({
       const objectUrl = URL.createObjectURL(newImageFile);
       setImageUrl(objectUrl);
 
-      // Cleanup
       return () => URL.revokeObjectURL(objectUrl);
     } else {
       setImageUrl(collection.coverImage.filePath);
     }
   }, [collection, newImageFile]);
 
+  const getInsetClass = () => {
+    if (mode === 'card') {
+      return 'inset-x-2.5 inset-y-2.5';
+    }
+    return 'inset-x-3.5 inset-y-3.5';
+  };
+
+  const getStatusLabelClass = () => {
+    if (mode === 'card') {
+      return 'text-sm pt-1 pb-0.5 px-3.5';
+    }
+    return 'pt-1.5 pb-0.5 px-4';
+  };
+
   return (
     <div className="relative aspect-square rounded-lg overflow-hidden">
       <img src={imageUrl} alt={collection.title} className="w-full h-full object-cover" />
-      <div className="absolute inset-x-3.5 inset-y-3.5 flex justify-end items-end">
+
+      {/* Status Label */}
+      <div className={cn('absolute flex justify-end items-start', getInsetClass())}>
         <span
           className={cn(
-            'font-title font-bold text-secondary-800/40 border-2 border-secondary-800/40',
-            'pt-1.5 pb-0.5 px-4 rounded-full tracking-wide',
+            'font-title font-bold text-secondary-800/40 border-2 border-secondary-800/40 rounded-full tracking-wide',
+            getStatusLabelClass(),
             collection.isPublished ? 'bg-status-published' : 'bg-status-draft',
           )}
         >
           {collection.isPublished ? 'Published' : 'Draft'}
         </span>
       </div>
-      {isEditMode && (
+
+      {/* Edit Mode (upload image) */}
+      {mode === 'edit' && (
         <div className="absolute inset-0 flex justify-center items-center bg-black/50 backdrop-blur-[1px]">
           <Button
             label="Upload image"
@@ -62,18 +83,38 @@ const CollectionCoverImage = ({
           />
         </div>
       )}
-      {!isEditMode && (
-        <div className="absolute inset-x-3.5 inset-y-3.5 flex gap-2.5">
-          <IconButton
-            icon={ArrowIcon}
-            className="w-[50px] h-[50px] bg-secondary-800/80 text-neutral-100 border-2 border-neutral-100/10 backdrop-blur-sm p-2.5"
-            onClick={onBackClick}
-          />
-          <IconButton
-            icon={EditIcon}
-            className="w-[50px] h-[50px] bg-secondary-800/80 text-neutral-100 border-2 border-neutral-100/10 backdrop-blur-sm"
-            onClick={onEditClick}
-          />
+
+      {/* Navigation Buttons */}
+      {mode === 'default' && (
+        <div className={cn('absolute flex gap-2.5', getInsetClass())}>
+          {onBackClick && (
+            <IconButton
+              icon={ArrowIcon}
+              className="w-[50px] h-[50px] bg-secondary-800/80 text-neutral-100 border-2 border-neutral-100/10 backdrop-blur-sm p-2.5"
+              onClick={onBackClick}
+            />
+          )}
+          {onEditClick && (
+            <IconButton
+              icon={EditIcon}
+              className="w-[50px] h-[50px] bg-secondary-800/80 text-neutral-100 border-2 border-neutral-100/10 backdrop-blur-sm"
+              onClick={onEditClick}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Info Tags */}
+      {(mode === 'card' || mode === 'read') && (
+        <div className={cn('absolute flex flex-col gap-1.5 justify-end items-start', getInsetClass())}>
+          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
+            <Icon icon={ArtworksIcon} />
+            <span className="font-medium text-sm mr-0.5">{collection.objects.length} Objects</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
+            <Icon icon={LocationIcon} className="mb-px" />
+            <span className="font-medium text-sm mr-0.5 mt-px">{collection.city}</span>
+          </div>
         </div>
       )}
     </div>
