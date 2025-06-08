@@ -8,6 +8,8 @@ import Collections from './Collections';
 import Home from './Home';
 import Insights from './Insights';
 import NotFound from './NotFound';
+import ObjectCreate from './ObjectCreate';
+import ObjectDetail from './ObjectDetail';
 import Objects from './Objects';
 import Settings from './Settings';
 import SignIn from './SignIn';
@@ -23,6 +25,8 @@ const Pages = () => {
           <Route path="/collections/:collectionId" element={<CollectionDetail />} />
           <Route path="/collections/create" element={<CollectionCreate />} />
           <Route path="/objects" element={<Objects />} />
+          <Route path="/objects/:objectId" element={<ObjectDetail />} />
+          <Route path="/objects/create" element={<ObjectCreate />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
