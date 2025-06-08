@@ -1,4 +1,5 @@
 import { GenreItem } from './genres.types';
+import { ObjectItem } from './object.types';
 
 export type Collections = {
   collections: CollectionItem[];
@@ -22,7 +23,7 @@ export type CollectionItem = {
     fileType: string;
     fileSize: number;
   };
-  objects: string[];
+  objects: ObjectItem[];
   location?: {
     lat: number;
     lon: number;
@@ -31,9 +32,10 @@ export type CollectionItem = {
   isPublished: boolean;
 };
 
-// Base form data type with required fields for all steps
-export type CollectionItemFormData = Omit<CollectionItem, 'genres'> & {
+
+export type CollectionItemFormData = Omit<CollectionItem, 'genres' | 'objects'> & {
   genres: string[];
+  objects: string[];
 };
 
 export type CollectionFormData = {

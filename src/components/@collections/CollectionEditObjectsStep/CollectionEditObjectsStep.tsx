@@ -3,14 +3,14 @@ import { isEqual } from 'lodash';
 import { useCollectionObjects } from 'queries/objects/useCollectionObjects';
 import { useObjects } from 'queries/objects/useObjects';
 import { useEffect, useMemo, useState } from 'react';
-import { CollectionItem } from 'types/collection.types';
+import { CollectionItemFormData } from 'types/collection.types';
 
 import Button from 'components/@button/Button';
 import { ChevronLeftIcon, ChevronRightIcon } from 'components/@icon';
 import ObjectCard from 'components/@object/ObjectCard';
 
 interface Props {
-  collectionId: CollectionItem['_id'];
+  collectionId: CollectionItemFormData['_id'];
   setIsEdited: (isEdited: boolean) => void;
   setSelectedObjects: (objects: string[]) => void;
   onBackClick: () => void;
@@ -27,7 +27,7 @@ const CollectionEditObjectsStep = ({
   const { data: objects } = useObjects();
   const { data: collectionObjects } = useCollectionObjects(collectionId);
 
-  const [selectedObjectIds, setSelectedObjectIds] = useState<CollectionItem['objects']>([]);
+  const [selectedObjectIds, setSelectedObjectIds] = useState<CollectionItemFormData['objects']>([]);
 
   // Initialization effect
   useEffect(() => {
@@ -69,29 +69,32 @@ const CollectionEditObjectsStep = ({
   return (
     <>
       {sortedObjects.length > 0 && (
-        <div className="flex flex-col gap-4 pt-4">
-          <h2 className="font-title font-semibold text-xl text-neutral-100">
-            Selected objects ({selectedObjectIds.length})
-          </h2>
-          <div className="grid grid-cols-1 gap-5">
-            <AnimatePresence>
-              {sortedObjects.map((object) => (
-                <motion.div
-                  key={object._id}
-                  initial={{ opacity: 0, y: 25 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -25 }}
-                  transition={{ duration: 0.25 }}
-                  layout
-                >
-                  <ObjectCard
-                    object={object}
-                    isSelected={selectedObjectIds.includes(object._id)}
-                    onSelect={() => handleObjectToggle(object._id)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+        <div className="flex flex-col gap-8 pt-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between font-title text-xl tracking-wide">
+              <h2 className="font-semibold text-neutral-100">Selected objects</h2>
+              <span className="font-light text-neutral-100/50">({selectedObjectIds.length})</span>
+            </div>
+            <div className="grid grid-cols-1 gap-5">
+              <AnimatePresence>
+                {sortedObjects.map((object) => (
+                  <motion.div
+                    key={object._id}
+                    initial={{ opacity: 0, y: 25 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -25 }}
+                    transition={{ duration: 0.25 }}
+                    layout
+                  >
+                    <ObjectCard
+                      object={object}
+                      isSelected={selectedObjectIds.includes(object._id)}
+                      onSelect={() => handleObjectToggle(object._id)}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
           <div className="flex justify-between gap-2.5">
             <Button
