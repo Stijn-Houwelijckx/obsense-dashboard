@@ -47,6 +47,13 @@ const CollectionCoverImage = ({
     return 'inset-x-3.5 inset-y-3.5';
   };
 
+  const getGapClass = () => {
+    if (mode === 'read') {
+      return 'gap-2.5';
+    }
+    return 'gap-1.5';
+  };
+
   const getStatusLabelClass = () => {
     if (mode === 'card') {
       return 'text-sm pt-1 pb-0.5 px-3.5';
@@ -106,7 +113,7 @@ const CollectionCoverImage = ({
 
       {/* Info Tags */}
       {(mode === 'card' || mode === 'read') && (
-        <div className={cn('absolute flex flex-col gap-1.5 justify-end items-start', getInsetClass())}>
+        <div className={cn('absolute flex flex-col justify-end items-start', getGapClass(), getInsetClass())}>
           <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
             <Icon icon={ArtworksIcon} />
             <span className="font-medium text-sm mr-0.5">{collection.objects.length} Objects</span>
