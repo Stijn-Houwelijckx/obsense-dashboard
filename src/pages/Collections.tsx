@@ -2,10 +2,10 @@ import { useCollections } from 'queries/collections/useCollections';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import CreateButton from 'components/@button/CreateButton';
 import IconButton from 'components/@button/IconButton';
 import MenuButton from 'components/@button/MenuButton';
 import CollectionCard from 'components/@collections/CollectionCard';
-import CollectionCreateButton from 'components/@collections/CollectionCreateButton';
 import { HorizontalDivider } from 'components/@common/Divider';
 import { PlusIcon } from 'components/@icon';
 import Navigation from 'components/@navigation/Navigation';
@@ -36,11 +36,12 @@ const Collections = () => {
             title="No collections..."
             description="Ready to go live? Let's build your first 3D collection and launch it into the world!"
             cta="Create collection"
+            onClick={() => navigate('/collections/create')}
           />
         )}
         {collections && collections.length > 0 && (
           <div className="flex flex-col gap-6 pt-8">
-            <CollectionCreateButton />
+            <CreateButton to="/collections/create" label="Create collection" />
             <HorizontalDivider />
             <div className="grid grid-cols-1 gap-5">
               {collections.map((collection) => (
