@@ -1,5 +1,5 @@
 import { ApiResponse } from 'types/api.types';
-import { Collection, Collections } from 'types/collection.types';
+import { Collection, CollectionItem, CollectionObjectsFormData, Collections } from 'types/collection.types';
 
 import api from './api';
 
@@ -18,11 +18,11 @@ export const collectionsService = {
 
     return response.data;
   },
-  getCollectionDetails: async (id: string) => {
+  getCollectionDetails: async (id: CollectionItem['_id']) => {
     const response = await api.get<ApiResponse<Collection>>(`/artist/collections/${id}`);
     return response.data;
   },
-  updateCollection: async (id: string, collection: FormData) => {
+  updateCollection: async (id: CollectionItem['_id'], collection: FormData) => {
     const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}`, collection, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -30,7 +30,11 @@ export const collectionsService = {
     });
     return response.data;
   },
-  deleteCollection: async (id: string) => {
+  updateCollectionObjects: async (id: CollectionItem['_id'], objects: CollectionObjectsFormData) => {
+    const response = await api.put<ApiResponse<Collection>>(`/artist/collections/${id}/add-objects`, objects);
+    return response.data;
+  },
+  deleteCollection: async (id: CollectionItem['_id']) => {
     const response = await api.delete<ApiResponse<null>>(`/artist/collections/${id}`);
     return response.data;
   },
