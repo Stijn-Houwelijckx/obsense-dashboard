@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'queries/QueryKeys';
 import { collectionsService } from 'services/collections';
+import { CollectionItem } from 'types/collection.types';
 
-const deleteCollection = async (id: string) => {
+const deleteCollection = async (id: CollectionItem['_id']) => {
   const response = await collectionsService.deleteCollection(id);
   return response;
 };

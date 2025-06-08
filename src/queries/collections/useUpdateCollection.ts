@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'queries/QueryKeys';
 import { collectionsService } from 'services/collections';
+import { CollectionItem } from 'types/collection.types';
 
-const updateCollection = async ({ id, collection }: { id: string; collection: FormData }) => {
+const updateCollection = async ({ id, collection }: { id: CollectionItem['_id']; collection: FormData }) => {
   const { data } = await collectionsService.updateCollection(id, collection);
   return data;
 };
