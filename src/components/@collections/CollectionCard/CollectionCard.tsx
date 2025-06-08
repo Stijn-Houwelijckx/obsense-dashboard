@@ -10,7 +10,7 @@ interface Props {
 
 const CollectionCard = ({ collection }: Props) => {
   return (
-    <article key={collection._id} className="flex flex-col gap-4 bg-secondary-800 rounded-lg p-4">
+    <article className="flex flex-col gap-4 bg-secondary-800 rounded-lg p-4">
       <div className="relative aspect-square rounded-lg overflow-hidden">
         <img src={collection.coverImage.filePath} alt={collection.title} className="w-full h-full object-cover" />
         <div className="absolute inset-x-2.5 inset-y-2.5 flex justify-end items-start">
@@ -34,11 +34,11 @@ const CollectionCard = ({ collection }: Props) => {
         </div>
       </div>
       <div className="flex justify-between items-center bg-secondary-700 rounded-lg p-2.5 px-3.5">
-        <div className="flex flex-col gap-1 w-3/4">
+        <div className="w-3/4 flex flex-col gap-1 ">
           <span className="font-title font-light text-[10px] text-neutral-50/50 uppercase leading-[1.15] tracking-widest pt-0.5">
             {collection.type}
           </span>
-          <h2 className="font-title truncate font-semibold text-lg text-primary-500 leading-[1.15]">
+          <h2 className="font-title font-semibold text-lg text-primary-500 leading-[1.15] truncate">
             {collection.title}
           </h2>
         </div>
