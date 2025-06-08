@@ -1,8 +1,9 @@
+import { useToggleCollectionPublish } from 'queries/collections/useToggleCollectionPublish';
 import { useUpdateCollection } from 'queries/collections/useUpdateCollection';
 import { useUpdateCollectionObjects } from 'queries/collections/useUpdateCollectionObjects';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CollectionGeneralFormData, CollectionItem } from 'types/collection.types';
+import { CollectionGeneralFormData, CollectionItem, CollectionItemFormData } from 'types/collection.types';
 import { DialogTarget } from 'types/dialog.types';
 import { isCollectionEdited } from 'utils/isCollectionEdited';
 
@@ -24,6 +25,7 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
   const navigate = useNavigate();
   const { updateCollection } = useUpdateCollection();
   const { updateCollectionObjects } = useUpdateCollectionObjects();
+  const { toggleCollectionPublish } = useToggleCollectionPublish();
 
   const [saveEditsTarget, setSaveEditsTarget] = useState<DialogTarget | null>(null);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
@@ -33,7 +35,7 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
   const [formData, setFormData] = useState<CollectionGeneralFormData | null>(null);
   const [formErrors, setFormErrors] = useState(false);
 
-  const [selectedObjects, setSelectedObjects] = useState<CollectionItem['objects']>([]);
+  const [selectedObjects, setSelectedObjects] = useState<CollectionItemFormData['objects']>([]);
 
   const handleFormDataChange = useCallback(() => {
     if (!formData) return;
@@ -58,7 +60,11 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
       setIsConfirmDialogOpen(true);
       setSaveEditsTarget({ target: 'back' });
     } else {
-      navigate(-1);
+      if (currentEditStep === 1) {
+        navigate(-1);
+      } else {
+        setCurrentEditStep((prev) => prev - 1);
+      }
     }
   };
 
@@ -117,11 +123,25 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
     );
   };
 
+  const handleSavePublish = () => {
+    toggleCollectionPublish(
+      { id: collection._id },
+      {
+        onSuccess: () => {
+          setIsEdited(false);
+          navigate('/collections');
+        },
+      },
+    );
+  };
+
   const handleSaveEdits = () => {
     if (currentEditStep === 1) {
       handleSaveGeneral();
     } else if (currentEditStep === 2) {
       handleSaveObjects();
+    } else if (currentEditStep === 3) {
+      handleSavePublish();
     }
   };
 
@@ -133,7 +153,11 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
     } else if (saveEditsTarget.target === 'read') {
       setIsEditMode(false);
     } else if (saveEditsTarget.target === 'back') {
-      navigate(-1);
+      if (currentEditStep === 1) {
+        navigate(-1);
+      } else {
+        setCurrentEditStep((prev) => prev - 1);
+      }
     }
     setSaveEditsTarget(null);
     setIsConfirmDialogOpen(false);
@@ -173,7 +197,13 @@ const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep
           onSaveEdits={handleSaveEdits}
         />
       )}
-      {currentEditStep === 3 && <CollectionEditPublishStep collectionId={collection._id} />}
+      {currentEditStep === 3 && (
+        <CollectionEditPublishStep
+          collection={collection}
+          onBackClick={handleBackClick}
+          onSaveEdits={handleSaveEdits}
+        />
+      )}
       <ConfirmDialog
         title="Edits not saved..."
         message="You have unsaved edits. Do you want to save them before leaving this page?"
