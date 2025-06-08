@@ -20,12 +20,8 @@ export const useUpdateCollectionObjects = () => {
   const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: updateCollectionObjects,
     onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({
-        queryKey: QueryKeys.objects.collection(id),
-      });
-      await queryClient.cancelQueries({
-        queryKey: QueryKeys.collections.details(id),
-      });
+      await queryClient.cancelQueries({ queryKey: QueryKeys.objects.collection(id) });
+      await queryClient.cancelQueries({ queryKey: QueryKeys.collections.details(id) });
 
       const previousCollectionObjects = queryClient.getQueryData(QueryKeys.objects.collection(id));
       const previousCollection = queryClient.getQueryData(QueryKeys.collections.details(id));
