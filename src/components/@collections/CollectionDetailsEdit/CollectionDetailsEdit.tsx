@@ -1,4 +1,5 @@
 import { useUpdateCollection } from 'queries/collections/useUpdateCollection';
+import { useUpdateCollectionObjects } from 'queries/collections/useUpdateCollectionObjects';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CollectionGeneralFormData, CollectionItem } from 'types/collection.types';
@@ -10,6 +11,7 @@ import ConfirmDialog from 'components/@dialog/ConfirmDialog';
 import CollectionEditGeneralStep from '../CollectionEditGeneralStep';
 import CollectionEditObjectsStep from '../CollectionEditObjectsStep';
 import CollectionEditPanel from '../CollectionEditPanel';
+import CollectionEditPublishStep from '../CollectionEditPublishStep';
 
 interface Props {
   collection: CollectionItem;
@@ -21,14 +23,17 @@ interface Props {
 const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, setCurrentEditStep }: Props) => {
   const navigate = useNavigate();
   const { updateCollection } = useUpdateCollection();
+  const { updateCollectionObjects } = useUpdateCollectionObjects();
 
-  const [dialogTarget, setDialogTarget] = useState<DialogTarget | null>(null);
+  const [saveEditsTarget, setSaveEditsTarget] = useState<DialogTarget | null>(null);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   const [isEdited, setIsEdited] = useState(false);
 
   const [formData, setFormData] = useState<CollectionGeneralFormData | null>(null);
   const [formErrors, setFormErrors] = useState(false);
+
+  const [selectedObjects, setSelectedObjects] = useState<CollectionItem['objects']>([]);
 
   const handleFormDataChange = useCallback(() => {
     if (!formData) return;
@@ -39,14 +44,19 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
     handleFormDataChange();
   }, [handleFormDataChange]);
 
+  // This action doesn't need a confirm dialog
   const handleNextEditStep = () => {
-    setCurrentEditStep((prev) => prev + 1);
+    if (isEdited) {
+      setSaveEditsTarget({ target: 'step', step: currentEditStep + 1 });
+    } else {
+      setCurrentEditStep((prev) => prev + 1);
+    }
   };
 
   const handleEditStepClick = (step: number) => {
     if (isEdited) {
       setIsConfirmDialogOpen(true);
-      setDialogTarget({ target: 'step', step });
+      setSaveEditsTarget({ target: 'step', step });
     } else {
       setCurrentEditStep(step);
     }
@@ -55,7 +65,7 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   const handleBackClick = () => {
     if (isEdited) {
       setIsConfirmDialogOpen(true);
-      setDialogTarget({ target: 'back' });
+      setSaveEditsTarget({ target: 'back' });
     } else {
       navigate(-1);
     }
@@ -64,56 +74,75 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   const handleReadClick = () => {
     if (isEdited) {
       setIsConfirmDialogOpen(true);
-      setDialogTarget({ target: 'read' });
+      setSaveEditsTarget({ target: 'read' });
     } else {
       setIsEditMode(false);
     }
   };
 
-  const handleSaveEdits = () => {
+  const handleSaveGeneral = () => {
     if (!formData) return;
 
-    if (isCollectionEdited(collection, formData)) {
-      const collectionFormData = new FormData();
+    // Voeg de form data toe (zonder coverImage)
+    const collectionFormData = new FormData();
+    const { coverImage, ...collectionData } = formData;
+    collectionFormData.append('collection', JSON.stringify({ collection: collectionData }));
 
-      // Voeg de form data toe (zonder coverImage)
-      const { coverImage, ...collectionData } = formData;
-      collectionFormData.append('collection', JSON.stringify({ collection: collectionData }));
+    // Als er een nieuwe cover image is, voeg deze toe aan de FormData
+    if (coverImage) {
+      collectionFormData.append('coverImage', coverImage);
+    }
 
-      // Als er een nieuwe cover image is, voeg deze toe aan de FormData
-      if (coverImage) {
-        collectionFormData.append('coverImage', coverImage);
-      }
-
-      updateCollection(
-        { id: collection._id, collection: collectionFormData },
-        {
-          onSuccess: () => {
-            setIsEdited(false);
-            handleDialogTarget();
-          },
+    updateCollection(
+      { id: collection._id, collection: collectionFormData },
+      {
+        onSuccess: () => {
+          setIsEdited(false);
+          handleSaveEditsTarget();
         },
-      );
+      },
+    );
+  };
+
+  const handleSaveObjects = () => {
+    if (!selectedObjects) return;
+
+    updateCollectionObjects(
+      { id: collection._id, objects: { objects: { objectIds: selectedObjects } } },
+      {
+        onSuccess: () => {
+          setIsEdited(false);
+          handleSaveEditsTarget();
+        },
+      },
+    );
+  };
+
+  const handleSaveEdits = () => {
+    if (currentEditStep === 1) {
+      handleSaveGeneral();
+    } else if (currentEditStep === 2) {
+      handleSaveObjects();
     }
   };
 
-  const handleDialogTarget = () => {
-    if (!dialogTarget) return;
+  const handleSaveEditsTarget = () => {
+    if (!saveEditsTarget) return;
 
-    if (dialogTarget.target === 'step') {
-      setCurrentEditStep(dialogTarget.step!);
-    } else if (dialogTarget.target === 'read') {
+    if (saveEditsTarget.target === 'step') {
+      setCurrentEditStep(saveEditsTarget.step!);
+    } else if (saveEditsTarget.target === 'read') {
       setIsEditMode(false);
-    } else if (dialogTarget.target === 'back') {
+    } else if (saveEditsTarget.target === 'back') {
       navigate(-1);
     }
-    setDialogTarget(null);
+    setSaveEditsTarget(null);
     setIsConfirmDialogOpen(false);
   };
 
   const handleCloseDialog = () => {
     setIsConfirmDialogOpen(false);
-    setDialogTarget(null);
+    setSaveEditsTarget(null);
   };
 
   return (
@@ -130,14 +159,28 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
       {currentEditStep === 1 && (
         <CollectionEditGeneralStep
           collection={collection}
-          setIsEdited={setIsEdited}
           onNextEditStep={handleNextEditStep}
+          setFormData={setFormData}
+          setFormErrors={setFormErrors}
           onBackClick={handleBackClick}
-          onFormDataChange={setFormData}
-          onFormErrorsChange={setFormErrors}
+          onSaveEdits={handleSaveEdits}
         />
       )}
-      {currentEditStep === 2 && <CollectionEditObjectsStep collectionId={collection._id} />}
+      {currentEditStep === 2 && (
+        <CollectionEditObjectsStep
+          collectionId={collection._id}
+          setIsEdited={setIsEdited}
+          onNextEditStep={handleNextEditStep}
+          setSelectedObjects={setSelectedObjects}
+          onBackClick={handleBackClick}
+          onSaveEdits={handleSaveEdits}
+        />
+      )}
+      {currentEditStep === 3 && (
+        <CollectionEditPublishStep
+          collectionId={collection._id}
+        />
+      )}
       <ConfirmDialog
         title="Edits not saved..."
         message="You have unsaved edits. Do you want to save them before leaving this page?"

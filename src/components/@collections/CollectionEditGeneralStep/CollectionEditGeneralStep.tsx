@@ -1,4 +1,3 @@
-import { useUpdateCollection } from 'queries/collections/useUpdateCollection';
 import { useGenres } from 'queries/genres/useGenres';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -20,20 +19,20 @@ import CollectionGenresDialog from '../CollectionGenresDialog';
 
 interface Props {
   collection: CollectionItem;
-  setIsEdited: (isEdited: boolean) => void;
   onNextEditStep: () => void;
+  setFormData: (data: CollectionGeneralFormData) => void;
+  setFormErrors: (hasErrors: boolean) => void;
   onBackClick: () => void;
-  onFormDataChange: (data: CollectionGeneralFormData) => void;
-  onFormErrorsChange: (hasErrors: boolean) => void;
+  onSaveEdits: () => void;
 }
 
 const CollectionEditGeneralStep = ({
   collection,
-  setIsEdited,
   onNextEditStep,
+  setFormData,
+  setFormErrors,
   onBackClick,
-  onFormDataChange,
-  onFormErrorsChange,
+  onSaveEdits,
 }: Props) => {
   const {
     register,
@@ -60,7 +59,6 @@ const CollectionEditGeneralStep = ({
   const [isGenresDialogOpen, setIsGenresDialogOpen] = useState(false);
 
   const { data: availableGenres } = useGenres();
-  const { updateCollection } = useUpdateCollection();
 
   const type = useWatch({ control, name: 'type' });
   const title = useWatch({ control, name: 'title' });
@@ -86,9 +84,9 @@ const CollectionEditGeneralStep = ({
 
   useEffect(() => {
     const currentFormData = getCurrentFormData();
-    onFormDataChange(currentFormData);
-    onFormErrorsChange(Object.keys(errors).length > 0);
-  }, [getCurrentFormData, onFormDataChange, onFormErrorsChange, errors]);
+    setFormData(currentFormData);
+    setFormErrors(Object.keys(errors).length > 0);
+  }, [getCurrentFormData, setFormData, setFormErrors, errors]);
 
   useEffect(() => {
     setValue('coverImage', undefined);
@@ -116,26 +114,9 @@ const CollectionEditGeneralStep = ({
     fileInputRef.current?.click();
   };
 
-  const onSubmit = async (data: CollectionGeneralFormData) => {
+  const onSubmit = (data: CollectionGeneralFormData) => {
     if (isCollectionEdited(collection, data)) {
-      const collectionFormData = new FormData();
-
-      const { coverImage, ...collectionData } = data;
-      collectionFormData.append('collection', JSON.stringify({ collection: collectionData }));
-
-      if (coverImage) {
-        collectionFormData.append('coverImage', coverImage);
-      }
-
-      updateCollection(
-        { id: collection._id, collection: collectionFormData },
-        {
-          onSuccess: () => {
-            setIsEdited(false);
-            onNextEditStep();
-          },
-        },
-      );
+      onSaveEdits();
     } else {
       onNextEditStep();
     }
