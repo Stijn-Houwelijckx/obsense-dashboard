@@ -4,7 +4,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { CollectionGeneralFormData, CollectionItem } from 'types/collection.types';
 import { GenreItem } from 'types/genres.types';
 import { cn } from 'utils/cn';
-import { isCollectionEdited } from 'utils/isCollectionEdited';
 
 import Button from 'components/@button/Button';
 import HiddenFileField from 'components/@form/HiddenFileField';
@@ -19,21 +18,13 @@ import CollectionGenresDialog from '../CollectionGenresDialog';
 
 interface Props {
   collection: CollectionItem;
-  onNextEditStep: () => void;
   setFormData: (data: CollectionGeneralFormData) => void;
   setFormErrors: (hasErrors: boolean) => void;
   onBackClick: () => void;
   onSaveEdits: () => void;
 }
 
-const CollectionEditGeneralStep = ({
-  collection,
-  onNextEditStep,
-  setFormData,
-  setFormErrors,
-  onBackClick,
-  onSaveEdits,
-}: Props) => {
+const CollectionEditGeneralStep = ({ collection, setFormData, setFormErrors, onBackClick, onSaveEdits }: Props) => {
   const {
     register,
     handleSubmit,
@@ -115,11 +106,8 @@ const CollectionEditGeneralStep = ({
   };
 
   const onSubmit = (data: CollectionGeneralFormData) => {
-    if (isCollectionEdited(collection, data)) {
-      onSaveEdits();
-    } else {
-      onNextEditStep();
-    }
+    setFormData(data);
+    onSaveEdits();
   };
 
   return (

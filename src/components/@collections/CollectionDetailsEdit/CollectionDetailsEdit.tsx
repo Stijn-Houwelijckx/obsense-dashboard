@@ -20,7 +20,7 @@ interface Props {
   setIsEditMode: (isEditMode: boolean) => void;
 }
 
-const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, setCurrentEditStep }: Props) => {
+const CollectionDetailsEdit = ({ collection, currentEditStep, setCurrentEditStep, setIsEditMode }: Props) => {
   const navigate = useNavigate();
   const { updateCollection } = useUpdateCollection();
   const { updateCollectionObjects } = useUpdateCollectionObjects();
@@ -43,15 +43,6 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
   useEffect(() => {
     handleFormDataChange();
   }, [handleFormDataChange]);
-
-  // This action doesn't need a confirm dialog
-  const handleNextEditStep = () => {
-    if (isEdited) {
-      setSaveEditsTarget({ target: 'step', step: currentEditStep + 1 });
-    } else {
-      setCurrentEditStep((prev) => prev + 1);
-    }
-  };
 
   const handleEditStepClick = (step: number) => {
     if (isEdited) {
@@ -98,7 +89,11 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
       {
         onSuccess: () => {
           setIsEdited(false);
-          handleSaveEditsTarget();
+          if (saveEditsTarget) {
+            handleSaveEditsTarget();
+          } else {
+            setCurrentEditStep((prev) => prev + 1);
+          }
         },
       },
     );
@@ -112,7 +107,11 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
       {
         onSuccess: () => {
           setIsEdited(false);
-          handleSaveEditsTarget();
+          if (saveEditsTarget) {
+            handleSaveEditsTarget();
+          } else {
+            setCurrentEditStep((prev) => prev + 1);
+          }
         },
       },
     );
@@ -159,7 +158,6 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
       {currentEditStep === 1 && (
         <CollectionEditGeneralStep
           collection={collection}
-          onNextEditStep={handleNextEditStep}
           setFormData={setFormData}
           setFormErrors={setFormErrors}
           onBackClick={handleBackClick}
@@ -170,17 +168,12 @@ const CollectionDetailsEdit = ({ collection, setIsEditMode, currentEditStep, set
         <CollectionEditObjectsStep
           collectionId={collection._id}
           setIsEdited={setIsEdited}
-          onNextEditStep={handleNextEditStep}
           setSelectedObjects={setSelectedObjects}
           onBackClick={handleBackClick}
           onSaveEdits={handleSaveEdits}
         />
       )}
-      {currentEditStep === 3 && (
-        <CollectionEditPublishStep
-          collectionId={collection._id}
-        />
-      )}
+      {currentEditStep === 3 && <CollectionEditPublishStep collectionId={collection._id} />}
       <ConfirmDialog
         title="Edits not saved..."
         message="You have unsaved edits. Do you want to save them before leaving this page?"

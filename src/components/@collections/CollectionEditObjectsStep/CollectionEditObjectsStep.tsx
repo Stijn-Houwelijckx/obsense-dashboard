@@ -5,18 +5,25 @@ import { useObjects } from 'queries/objects/useObjects';
 import { useEffect, useMemo, useState } from 'react';
 import { CollectionItem } from 'types/collection.types';
 
+import Button from 'components/@button/Button';
+import { ChevronLeftIcon, ChevronRightIcon } from 'components/@icon';
 import ObjectCard from 'components/@object/ObjectCard';
 
 interface Props {
   collectionId: CollectionItem['_id'];
   setIsEdited: (isEdited: boolean) => void;
-  onNextEditStep: () => void;
   setSelectedObjects: (objects: string[]) => void;
   onBackClick: () => void;
   onSaveEdits: () => void;
 }
 
-const CollectionEditObjectsStep = ({ collectionId, setIsEdited, setSelectedObjects }: Props) => {
+const CollectionEditObjectsStep = ({
+  collectionId,
+  setIsEdited,
+  setSelectedObjects,
+  onBackClick,
+  onSaveEdits,
+}: Props) => {
   const { data: objects } = useObjects();
   const { data: collectionObjects } = useCollectionObjects(collectionId);
 
@@ -85,6 +92,22 @@ const CollectionEditObjectsStep = ({ collectionId, setIsEdited, setSelectedObjec
                 </motion.div>
               ))}
             </AnimatePresence>
+          </div>
+          <div className="flex justify-between gap-2.5">
+            <Button
+              label="Go back"
+              leftIcon={ChevronLeftIcon}
+              onClick={onBackClick}
+              className="h-12 font-semibold text-primary-500/80 bg-secondary-800/50 border border-primary-500/50 p-3 px-3.5"
+              labelClassName="leading-none px-2.5"
+            />
+            <Button
+              label="Next step"
+              rightIcon={ChevronRightIcon}
+              onClick={onSaveEdits}
+              className="h-12 font-semibold text-primary-500/80 bg-primary-500/20 border border-primary-500/50 p-3 px-3.5"
+              labelClassName="leading-none px-2.5"
+            />
           </div>
         </div>
       )}
