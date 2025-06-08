@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { CollectionItem } from 'types/collection.types';
 
 import IconButton from 'components/@button/IconButton';
@@ -10,6 +11,13 @@ interface Props {
 }
 
 const CollectionCard = ({ collection }: Props) => {
+  const navigate = useNavigate();
+
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    navigate(`/collections/${collection._id}`, { state: { mode: 'edit' } });
+  };
+
   return (
     <article className="flex flex-col gap-4 bg-secondary-800 rounded-lg p-4">
       <CollectionCoverImage collection={collection} mode="card" />
@@ -24,6 +32,7 @@ const CollectionCard = ({ collection }: Props) => {
         </div>
         <IconButton
           icon={EditIcon}
+          onEventClick={handleEditClick}
           className="h-11 w-11 bg-secondary-800 text-primary-500 border-2 border-primary-500/20 shadow-md p-2.5"
         />
       </div>

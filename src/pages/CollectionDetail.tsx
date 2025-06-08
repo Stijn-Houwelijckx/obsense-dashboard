@@ -1,6 +1,6 @@
 import { useCollectionDetails } from 'queries/collections/useCollectionDetails';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { CollectionItem } from 'types/collection.types';
 
 import MenuButton from 'components/@button/MenuButton';
@@ -9,16 +9,23 @@ import CollectionDetailsRead from 'components/@collections/CollectionDetailsRead
 import Navigation from 'components/@navigation/Navigation';
 
 const CollectionDetail = () => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
   const { collectionId } = useParams<{ collectionId: CollectionItem['_id'] }>();
   const { data: collection } = useCollectionDetails(collectionId);
 
-  const [isEditMode, setIsEditMode] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentEditStep, setCurrentEditStep] = useState(1);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    setIsEditMode(state?.mode === 'edit');
+  }, [state?.mode]);
 
   return (
     <>
@@ -40,7 +47,11 @@ const CollectionDetail = () => {
                 setIsEditMode={setIsEditMode}
               />
             ) : (
-              <CollectionDetailsRead collection={collection} />
+              <CollectionDetailsRead
+                collection={collection}
+                onEditClick={() => setIsEditMode(true)}
+                onBackClick={() => navigate(-1)}
+              />
             )}
           </div>
         )}

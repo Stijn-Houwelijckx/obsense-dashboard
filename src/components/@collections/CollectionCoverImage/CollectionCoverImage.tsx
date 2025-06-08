@@ -48,7 +48,7 @@ const CollectionCoverImage = ({
   };
 
   const getGapClass = () => {
-    if (mode === 'read') {
+    if (mode === 'read' || mode === 'default') {
       return 'gap-2.5';
     }
     return 'gap-1.5';
@@ -91,6 +91,20 @@ const CollectionCoverImage = ({
         </div>
       )}
 
+      {/* Info Tags */}
+      {(mode === 'card' || mode === 'read' || mode === 'default') && (
+        <div className={cn('absolute flex flex-col justify-end items-start', getGapClass(), getInsetClass())}>
+          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
+            <Icon icon={ArtworksIcon} />
+            <span className="font-medium text-sm mr-0.5">{collection.objects.length} Objects</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
+            <Icon icon={LocationIcon} className="mb-px" />
+            <span className="font-medium text-sm mr-0.5 mt-px">{collection.city}</span>
+          </div>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
       {mode === 'default' && (
         <div className={cn('absolute flex gap-2.5', getInsetClass())}>
@@ -108,20 +122,6 @@ const CollectionCoverImage = ({
               onClick={onEditClick}
             />
           )}
-        </div>
-      )}
-
-      {/* Info Tags */}
-      {(mode === 'card' || mode === 'read') && (
-        <div className={cn('absolute flex flex-col justify-end items-start', getGapClass(), getInsetClass())}>
-          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
-            <Icon icon={ArtworksIcon} />
-            <span className="font-medium text-sm mr-0.5">{collection.objects.length} Objects</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-secondary-800/40 border border-neutral-200/20 rounded-lg backdrop-blur-sm px-2.5 p-1.5">
-            <Icon icon={LocationIcon} className="mb-px" />
-            <span className="font-medium text-sm mr-0.5 mt-px">{collection.city}</span>
-          </div>
         </div>
       )}
     </div>
