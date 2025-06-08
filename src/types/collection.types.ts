@@ -22,18 +22,22 @@ export type CollectionItem = {
     fileType: string;
     fileSize: number;
   };
-  objects?: [];
+  objects: string[];
   location?: {
     lat: number;
     lon: number;
   };
   isActive?: boolean;
-  isPublished?: boolean;
+  isPublished: boolean;
 };
 
 // Base form data type with required fields for all steps
 export type CollectionItemFormData = Omit<CollectionItem, 'genres'> & {
   genres: string[];
+};
+
+export type CollectionFormData = {
+  collection: CollectionItemFormData;
 };
 
 // Specific form data type for the general step
@@ -44,6 +48,9 @@ export type CollectionGeneralFormData = Omit<
   coverImage?: File;
 };
 
-export type CollectionFormData = {
-  collection: CollectionItemFormData;
+// Specific form data type for the objects step
+export type CollectionObjectsFormData = {
+  objects: {
+    objectIds: string[];
+  };
 };
