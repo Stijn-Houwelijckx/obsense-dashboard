@@ -1,4 +1,5 @@
 import { ApiResponse } from 'types/api.types';
+import { CollectionItem } from 'types/collection.types';
 import { Objects } from 'types/object.types';
 
 import api from './api';
@@ -18,7 +19,7 @@ export const objectsService = {
 
     return response.data;
   },
-  getCollectionObjects: async (collectionId: string) => {
+  getCollectionObjects: async (collectionId: CollectionItem['_id']) => {
     const response = await api.get<ApiResponse<Objects>>(`/objects/collections/${collectionId}`);
 
     if (response.status === 204) {
