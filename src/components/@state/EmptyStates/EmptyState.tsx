@@ -6,9 +6,10 @@ interface Props {
   title: string;
   description: string;
   cta?: string;
+  onClick?: () => void;
 }
 
-const EmptyStates = ({ title, description, cta }: Props) => {
+const EmptyStates = ({ title, description, cta, onClick }: Props) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center">
       <img src={rocket} alt="rocket" className="w-3/5 h-auto" />
@@ -16,7 +17,7 @@ const EmptyStates = ({ title, description, cta }: Props) => {
         {title}
       </h2>
       <p className="text-neutral-50 text-center pt-3.5">{description}</p>
-      {cta && <Button label={cta} className="w-full mt-10 p-3.5 sm:p-4" />}
+      {cta && <Button label={cta} className="w-full mt-10 p-3.5 sm:p-4" onClick={onClick} />}
     </div>
   );
 };
