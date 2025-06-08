@@ -39,11 +39,7 @@ const SignUp = () => {
   } = useForm<SignUpFormData>();
 
   const [currentFormStep, setCurrentFormStep] = useState(1);
-  const [signUpError, setSignUpError] = useState<ErrorResponse | null>({
-    status: 'error',
-    code: 500,
-    message: 'Something went wrong... Please try again.',
-  });
+  const [signUpError, setSignUpError] = useState<ErrorResponse | null>(null);
 
   const currentFormFields = useFormFields(currentFormStep);
 
